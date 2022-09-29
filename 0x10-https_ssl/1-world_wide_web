@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Display the subdomain of a domain
+# shellcheck disable=SC2140
+domain () {
+	if [ -z "$2" ]
+	then
+		declare -a ARRAY=("www" "lb-01" "web-01" "web-02")
+		for sub in "${ARRAY[@]}"
+		do
+			dig "$sub"."$1" +noall +answer | tail -n 1 | awk -v suba="$sub" '{print "The subdomain " suba " is a " $4 " record and points to "$5}'
+		done
+	else
+		dig "$2"."$1" +noall +answer | tail -n 1 | awk -v suba="$2" '{print "The subdomain " suba " is a " $4 " record and points to "$5}'
+	fi
+	return 0
+}
+
+domain "$1" "$2"
